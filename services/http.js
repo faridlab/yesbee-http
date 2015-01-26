@@ -175,6 +175,13 @@ HTTPWrapper.prototype = {
     callback: function(exchange) {
         var scope = this.scopes[exchange.id];
 
+        var headers = {};
+        for(var i in exchange.headers) {
+                if (i.indexOf('http::') === 0) {
+                    headers[i.substr(6)] = exchange.headers[i];
+        }
+            }
+
         if (exchange.error) {
             if (exchange.error.statusCode) {
                 scope.response.writeHead(exchange.error.statusCode);
@@ -184,7 +191,7 @@ HTTPWrapper.prototype = {
             scope.response.end(JSON.stringify({error:exchange.error.message}));
         } else {
             if(exchange.header('http::status-code')) {
-                scope.response.writeHead(exchange.header('http::status-code'));
+                scope.response.writeHead(exchange.header('http::status-code'), headers);
             }
             if (exchange.body.pipe && typeof exchange.body.pipe === 'function') {
                 exchange.body.pipe(scope.response);
