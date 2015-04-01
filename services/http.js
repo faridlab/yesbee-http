@@ -122,7 +122,9 @@ HTTPWrapper.prototype = {
     process: function(req, res) {
 
         var parsed = url.parse(req.url);
-        var pathname = this.normalizePath(parsed.pathname);
+
+        var pathname = this.normalizePath(parsed.path);
+        // var pathname = this.normalizePath(parsed.pathname);
         var handler = this.routes[pathname],
             handlerIndex = pathname;
 
